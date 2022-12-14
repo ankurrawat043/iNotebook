@@ -6,16 +6,18 @@ import NoteItem from "./NoteItem";
 
 export default function Notes() {
   const context = useContext(noteContext);
-  const { notes, getNotes } = context;
+  const { notes, getNotes, editNote} = context;
   useEffect(() => {
     getNotes();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [note, setNote] = useState({ etitle: "", edescription: "", etag: "" });
+  const [note, setNote] = useState({id:"", etitle: "", edescription: "", etag: "" });
 
   const handleClick = (e) => {
     e.preventDefault();
+    editNote(note.id, note.etitle, note.edescription, note.etag);
+    refClose.current.click();
     
   };
 
@@ -25,9 +27,11 @@ export default function Notes() {
 
   const updateNote = (currentNote) => {
     ref.current.click();
-    setNote({etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag});
+    setNote({id:currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag});
   };
   const ref = useRef(null);
+  const refClose = useRef(null);
+
   return (
     <>
       <AddNote />
@@ -76,6 +80,8 @@ export default function Notes() {
                     name="etitle"
                     aria-describedby="emailHelp"
                     onChange={onChange}
+                    minLength={5}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -89,6 +95,8 @@ export default function Notes() {
                     id="edescription"
                     name="edescription"
                     onChange={onChange}
+                    minLength={5}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -110,13 +118,14 @@ export default function Notes() {
             </div>
             <div className="modal-footer">
               <button
+              ref={refClose}
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleClick} >
+              <button disabled={note.etitle.length<5||note.edescription.length<5} type="button" className="btn btn-primary" onClick={handleClick} >
                 Update Note
               </button>
             </div>
@@ -126,6 +135,9 @@ export default function Notes() {
 
       <div className="row my-3">
         <h2>Your Notes</h2>
+        <div className="container mx-2">
+        {notes.length === 0  && "No Notes to Display"}
+        </div>
         {notes.map((note) => {
           return (
             <NoteItem key={note._id} updateNote={updateNote} note={note} />
