@@ -36,6 +36,7 @@ export default function Login(props) {
     }
   return (
     <div>
+    <h1>Login to continue to iNotebook</h1>
       <form onSubmit={handleSubmit} >
   <div className="mb-3">
     <label htmlFor="email" className="form-label">Email address</label>

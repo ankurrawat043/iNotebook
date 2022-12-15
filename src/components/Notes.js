@@ -15,7 +15,7 @@ export default function Notes(props) {
       
     }
     else{
-      navigate("/about");
+      navigate("/login");
       
     }
    
